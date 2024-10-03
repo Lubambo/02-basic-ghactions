@@ -5,9 +5,23 @@ name: Deploy Project
 #on: [pull_request, workflow_dispatch]
 on:
   pull_request:
-    types: [opened, edited]
+    #types: [opened]
+    types:
+      - opened    # triggled whena pull request is opened
+    branches: 
+      - main      # main
+      - 'dev-*'   # dev-new, dev-this-is-new ...
+      - 'dev_*'   # dev_new, dev_this_is_new ...
+      - 'feat/**' # feat/new, feat/new/button ...
+    paths-ignore:
+      - '.github/workflows/*
 
   workflow_dispatch:
+
+  push:
+    branches: [main, 'dev-*', 'dev_*', 'feat/**']
+    paths-ignore:
+      - '.github/workflows/*'
 
 jobs:
   tests:
