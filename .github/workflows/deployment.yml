@@ -41,7 +41,7 @@ jobs:
       - name: Run tests
         run: npm test
 
-  deploy:
+  build:
     needs: [tests]
     runs-on: ubuntu-latest
     steps:
@@ -58,6 +58,24 @@ jobs:
       
       - name: Build project
         run: npm run build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files  # Name the artifact so it can be used in other jobs
+          path: dist
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-files  # Inform the name of the artifact that must be downloaded
+      
+      - name: Output contents
+        run: ls
       
       - name: Deploy
         run: echo "Deploying ..."
