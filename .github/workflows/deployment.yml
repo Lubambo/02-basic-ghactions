@@ -44,6 +44,10 @@ jobs:
   build:
     needs: [tests]
     runs-on: ubuntu-latest
+    outputs:
+      # Add to the 'build' job an output named as script-file.
+      # That output holds the output's target_file value of the step that has the id equals to 'publish'.
+      script-file: ${{ steps.publish.outputs.target_file }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -58,6 +62,10 @@ jobs:
       
       - name: Build project
         run: npm run build
+
+      - name: Publish JS filename
+        id: publish   # Set in this step an identifier named as 'publish', so this step content can be accessed through this identifier
+        run: find dist/assets/*.js -type f -execdir echo 'target_file={}' >> $GITHUB_OUTPUT ';'   # Set in the GITHUB_OUTPUT workflow enviroment file the key=value pair target_file=some_dist_asset_file.js
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -76,6 +84,11 @@ jobs:
       
       - name: Output contents
         run: ls
+
+      - name: Output JS filename
+        # The echo commands calls the github actions object 'needs' that contains all jobs's outputs.
+        # Inside 'needs' object we call the job by name and then its output object, so finally we call the desired output value.
+        run: echo "${{ needs.build.outputs.script-file }}"  
       
       - name: Deploy
         run: echo "Deploying ..."
