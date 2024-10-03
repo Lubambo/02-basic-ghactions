@@ -14,7 +14,7 @@ on:
       - 'dev_*'   # dev_new, dev_this_is_new ...
       - 'feat/**' # feat/new, feat/new/button ...
     paths-ignore:
-      - '.github/workflows/*
+      - '.github/workflows/*'
 
   workflow_dispatch:
 
